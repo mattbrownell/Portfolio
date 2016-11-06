@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>icons/forwardIcon.ico</file>
+        <file>icons/ifIcon.ico</file>
+        <file>icons/jumpIcon.ico</file>
+        <file>icons/loopIcon.ico</file>
+        <file>icons/waitIcon.ico</file>
+        <file>icons/removeLastIcon.ico</file>
+        <file>icons/level1.PNG</file>
+        <file>icons/level2.PNG</file>
+        <file>icons/level3.PNG</file>
+        <file>icons/level4.PNG</file>
+        <file>icons/level5.PNG</file>
+        <file>icons/level6.PNG</file>
+        <file>icons/level7.PNG</file>
+        <file>icons/level8.PNG</file>
+        <file>icons/level9.PNG</file>
+        <file>icons/SplashScreen.png</file>
+    </qresource>
+</RCC>

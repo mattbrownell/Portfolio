@@ -1,0 +1,2 @@
+D:\Qt\Qt5.6.0\Tools\mingw492_32\bin\ar.exe qc libglew.a  CMakeFiles/glew.dir/glew.c.obj
+D:\Qt\Qt5.6.0\Tools\mingw492_32\bin\ranlib.exe libglew.a
