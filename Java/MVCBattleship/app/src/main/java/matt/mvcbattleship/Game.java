@@ -1,66 +1,79 @@
 package matt.mvcbattleship;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 
 /**
  * Created by Matt on 10/21/2016.
  */
 public class Game implements Serializable{
-    private int _playerTurn;
-    private String _status;
+    public String id;
+    public String name;
+    public String player1;
+    public String winner;
+    public String _status;
+    public int missilesLaunched;
     private Grid _grid1;
     private Grid _grid2;
 
-    public Game() {
-        _playerTurn = 1;
-        _status = "In Progress";
+    public Game(String id, String name, String status) {
+        this.id = id;
+        this.name = name;
+        this.player1 = null;
+        this.winner = "IN_PROGRESS";
+        _status = status;
+        this.missilesLaunched = 0;
         _grid1 = new Grid();
         _grid2 = new Grid();
-        _grid1.generateBoats();
-        _grid2.generateBoats();
     }
 
-    public Grid get_grid1() {
+    public void setGame(String id, String name, String winner, String status, int missilesLaunched) {
+        this.id = id;
+        this.name = name;
+        this.winner = winner;
+        this._status = status;
+        this.missilesLaunched = missilesLaunched;
+    }
+
+    public Grid getGrid1() {
         return _grid1;
     }
 
-    public void set_grid1(Grid _grid1) {
-        this._grid1 = _grid1;
-    }
-
-    public Grid get_grid2() {
+    public Grid getGrid2() {
         return _grid2;
     }
 
-    public void set_grid2(Grid _grid2) {
-        this._grid2 = _grid2;
-    }
-
-    public int gameWon() {
-        if (_grid1.getHits() == 17) {
-            return 2;
-        }
-        else if (_grid2.getHits() == 17) {
-            return 1;
-        }
-        else
-            return 0;
-
-    }
-
-    void set_playerTurn(int turn) {
-        _playerTurn = turn;
-    }
-
-    int get_playerTurn() {
-        return _playerTurn;
-    }
-
-    void set_status(String status) {
+    void setStatus(String status) {
         _status = status;
     }
 
-    String get_status() {
-        return _status;
+    public void setUpGrids(String data2) {
+        try {
+            JSONObject obj = new JSONObject(data2);
+            JSONArray playerBoard = obj.getJSONArray("playerBoard");
+            JSONArray opponentBoard = obj.getJSONArray("opponentBoard");
+
+            for (int i = 0; i < playerBoard.length(); i++) {
+                JSONObject cell = playerBoard.getJSONObject(i);
+                int x = cell.getInt("xPos");
+                int y = cell.getInt("yPos");
+                String status = cell.getString("status");
+                _grid1.getCell(x,y).setShipStatus(status);
+            }
+
+            for (int i = 0; i < opponentBoard.length(); i++) {
+                JSONObject cell = opponentBoard.getJSONObject(i);
+                int x = cell.getInt("xPos");
+                int y = cell.getInt("yPos");
+                String status = cell.getString("status");
+                _grid2.getCell(x,y).setShipStatus(status);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        int dog = 0;
     }
 }

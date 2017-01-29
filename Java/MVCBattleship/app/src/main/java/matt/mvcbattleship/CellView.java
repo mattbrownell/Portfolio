@@ -17,63 +17,27 @@ public class CellView extends View {
         void onCellSelected(int x, int y);
     }
 
-    private boolean _enabled;
-    private boolean _ship;
-    private int _status;
+    private String _status;
     private int _x;
     private int _y;
+    public boolean cellEnabled;
     private OnCellSelectedListener _cellSelectedListener = null;
 
     public CellView(Context context) {
         super(context);
-        _ship = false;
-        _status = 0;
-        _enabled = true;
+        _status = "NONE";
+        cellEnabled = false;
     }
 
     public CellView(Context context, int x, int y) {
         super(context);
-        _ship = false;
-        _status = 0;
+        _status = "NONE";
         _x = x;
         _y = y;
-        _enabled = true;
+        cellEnabled = false;
     }
 
-    public boolean isEnabled() {
-        return _enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        _enabled = enabled;
-    }
-
-    public int get_y() {
-        return _y;
-    }
-
-    public void set_y(int _y) {
-        this._y = _y;
-    }
-
-    public int get_x() {
-        return _x;
-    }
-
-    public void set_x(int _x) {
-        this._x = _x;
-    }
-
-    public boolean is_ship() { return _ship; }
-
-    public void set_ship(boolean ship) {
-        _ship = ship;
-        this.invalidate();
-    }
-
-    public int get_status() { return _status; }
-
-    public void set_status(int status) {
+    public void setStatus(String status) {
         _status = status;
         this.invalidate();
     }
@@ -88,8 +52,11 @@ public class CellView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (_cellSelectedListener != null)
-            _cellSelectedListener.onCellSelected(_x, _y);
+        if (cellEnabled) {
+            if (_cellSelectedListener != null)
+                _cellSelectedListener.onCellSelected(_x, _y);
+            return super.onTouchEvent(event);
+        }
         return super.onTouchEvent(event);
     }
 
@@ -118,7 +85,7 @@ public class CellView extends View {
         shipRect.bottom += offset;
 
         Paint shipPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        if (_ship == true) {
+        if (_status.equals("SHIP") || _status.equals("HIT")) {
             shipPaint.setColor(Color.GRAY);
         }
         else {
@@ -137,11 +104,11 @@ public class CellView extends View {
         statusRect.bottom = center.y + (statusRect.right - getPaddingBottom())/2;
 
         Paint statusPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        if (_status == 1){
+        if (_status.equals("MISS")){
             statusPaint.setColor(Color.WHITE);
             canvas.drawOval(statusRect, statusPaint);
         }
-        else if(_status == 2) {
+        else if(_status.equals("HIT")) {
             statusPaint.setColor(Color.RED);
             canvas.drawOval(statusRect, statusPaint);
         }

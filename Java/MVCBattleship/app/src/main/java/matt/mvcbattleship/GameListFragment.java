@@ -49,9 +49,6 @@ public class GameListFragment extends ListFragment implements ListAdapter, Adapt
         super.onCreate(savedInstanceState);
         listView = new ListView(getActivity());
         listView.setAdapter(this);
-        if (Gallery.getInstance().getGameCount() == 0) {
-            Gallery.getInstance().addNewGame();
-        }
 
         return listView;
     }
@@ -80,8 +77,14 @@ public class GameListFragment extends ListFragment implements ListAdapter, Adapt
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         TextView gameSummaryView = new TextView(getActivity());
+
         Game game = Gallery.getInstance().getGame(position);
-        gameSummaryView.setText("Game: " + position + " Status: " + game.get_status() + " Current Turn: " + game.get_playerTurn() + " Player 1 Missiles: " + game.get_grid1().getTotal() + " Player 2 Missiles: " + game.get_grid2().getTotal());
+        if (game.player1 != null) {
+            gameSummaryView.setText("Game Name: " + game.name + "\nStatus: " + game._status + "\nJoined");
+        }
+        else {
+            gameSummaryView.setText("Game Name: " + game.name + "\nStatus: " + game._status);
+        }
         return gameSummaryView;
     }
 

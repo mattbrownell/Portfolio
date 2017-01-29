@@ -23,7 +23,7 @@ import android.widget.ListView;
 public class GameFragment extends Fragment implements GridView.OnValidInteractListener{
 
     public interface OnChangeMadeListener {
-        void OnChangeMade();
+        void OnChangeMade(int x, int y);
     }
 
     public interface NextTurnListener {
@@ -79,17 +79,6 @@ public class GameFragment extends Fragment implements GridView.OnValidInteractLi
 
         boolean phone = getResources().getBoolean(R.bool.isTab);
 
-        final Button nextTurnButton = new Button(getActivity());
-        nextTurnButton.setText("Next Turn");
-        nextTurnButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (nextTurnListener != null) {
-                    nextTurnListener.OnNextTurn();
-                }
-            }
-        });
-
         spacer.setPadding(20,20,20,20);
         _player1 = new GridView(getActivity(), 1);
         _player1.setOnValidInteractListener(this);
@@ -98,7 +87,6 @@ public class GameFragment extends Fragment implements GridView.OnValidInteractLi
         gameLayout.addView(_player1,  new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1));
 
         if (phone) {
-            gameLayout.addView(nextTurnButton);
         }
         else {
             gameLayout.addView(spacer);
@@ -107,94 +95,22 @@ public class GameFragment extends Fragment implements GridView.OnValidInteractLi
         gameLayout.addView(_player2,  new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1));
 
 
-        if (Gallery.getInstance().get_currentGame() != -1) {
-            updateView(Gallery.getInstance().get_currentGame());
-        }
-
-        if (Gallery.getInstance().get_currentGame() != -1) {
-            int turn = Gallery.getInstance().getGame(Gallery.getInstance().get_currentGame()).get_playerTurn();
-            if (turn == 3) {
-                updateView(Gallery.getInstance().get_currentGame());
-            }
-        }
-
-        _player2.hideBoats(Gallery.getInstance().get_currentGame());
-        _player1.hideBoats(Gallery.getInstance().get_currentGame());
-
         return gameLayout;
     }
 
     public void updateView(int game) {
-        int turn = Gallery.getInstance().getGame(Gallery.getInstance().get_currentGame()).get_playerTurn();
-        if (turn == 1) {
-            _player1.set_turn(true);
-            _player2.set_turn(false);
-        }
-        else if (turn == 2){
-            _player1.set_turn(false);
-            _player2.set_turn(true);
-        }
-        else if (turn ==3) {
-            _player1.set_turn(true);
-            _player2.set_turn(true);
-        }
         _player1.setupGame(game);
         _player2.setupGame(game);
-        _player2.hideBoats(Gallery.getInstance().get_currentGame());
-        _player1.hideBoats(Gallery.getInstance().get_currentGame());
     }
 
     @Override
-    public void OnValidInteract() {
-        if (Gallery.getInstance().getGame(Gallery.getInstance().get_currentGame()).get_grid1().getHits() == 17 ||
-                Gallery.getInstance().getGame(Gallery.getInstance().get_currentGame()).get_grid2().getHits() == 17) {
-            _player1.set_turn(true);
-            _player2.set_turn(true);
-            Gallery.getInstance().getGame(Gallery.getInstance().get_currentGame()).set_playerTurn(3);
-            if (Gallery.getInstance().getGame(Gallery.getInstance().get_currentGame()).get_grid1().getHits() == 17) {
-                Gallery.getInstance().getGame(Gallery.getInstance().get_currentGame()).set_status("Player 2 Won");
-            }
-            else if (Gallery.getInstance().getGame(Gallery.getInstance().get_currentGame()).get_grid2().getHits() == 17) {
-                Gallery.getInstance().getGame(Gallery.getInstance().get_currentGame()).set_status("Player 1 Won");
-            }
-        }
-        else if (_player1.is_turn()) {
-//            _player1.set_turn(false);
-//            _player2.set_turn(true);
-            _player2.set_turn(true);
-            _player1.set_turn(true);
-            Gallery.getInstance().getGame(Gallery.getInstance().get_currentGame()).set_playerTurn(2);
-            _player2.hideBoats(Gallery.getInstance().get_currentGame());
-            _player1.hideBoats(Gallery.getInstance().get_currentGame());
-        }
-        else if (_player2.is_turn()){
-//            _player1.set_turn(true);
-//            _player2.set_turn(false);
-            _player2.set_turn(true);
-            _player1.set_turn(true);
-            Gallery.getInstance().getGame(Gallery.getInstance().get_currentGame()).set_playerTurn(1);
-            _player2.hideBoats(Gallery.getInstance().get_currentGame());
-            _player1.hideBoats(Gallery.getInstance().get_currentGame());
-        }
-        else {
-            _player2.set_turn(false);
-            _player1.set_turn(false);
-        }
+    public void OnValidInteract(int x, int y) {
         if (_onChangeMade != null) {
-            _onChangeMade.OnChangeMade();
+            _onChangeMade.OnChangeMade(x, y);
         }
     }
 
     public void renablePlay() {
-        int turn = Gallery.getInstance().getGame(Gallery.getInstance().get_currentGame()).get_playerTurn();
-        if (turn == 2) {
-             _player1.set_turn(false);
-             _player2.set_turn(true);
-        }
-        else if (turn == 1) {
-            _player1.set_turn(true);
-            _player2.set_turn(false);
-        }
         _player1.setupGame(Gallery.getInstance().get_currentGame());
         _player2.setupGame(Gallery.getInstance().get_currentGame());
     }
